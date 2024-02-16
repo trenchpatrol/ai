@@ -1,6 +1,5 @@
 import "~/styles/globals.css";
 import type {AppProps} from "next/app";
-import {Provider as JotaiProvider} from "jotai";
 import {PrivyProvider} from "@privy-io/react-auth";
 import {toSolanaWalletConnectors} from "@privy-io/react-auth/solana";
 
@@ -28,21 +27,19 @@ export default function App({Component, pageProps}: AppProps) {
 
   return (
     <QueryClientProvider client={queryClientRef.current}>
-      <JotaiProvider>
-        {process.env.NODE_ENV === "development" ? (
-          <ReactQueryDevtools initialIsOpen={false} />
-        ) : null}
-        <PrivyProvider
-          appId="cm78xp5gj01bge4zn7eq813yw"
-          config={{
-            externalWallets: {solana: {connectors: solanaConnectors}},
-            solanaClusters: [
-              {name: "mainnet-beta", rpcUrl: "https://api.mainnet-beta.solana.com"},
-            ],
-          }}>
-          <Component {...pageProps} />
-        </PrivyProvider>
-      </JotaiProvider>
+      {process.env.NODE_ENV === "development" ? (
+        <ReactQueryDevtools initialIsOpen={false} />
+      ) : null}
+      <PrivyProvider
+        appId="cm78xp5gj01bge4zn7eq813yw"
+        config={{
+          externalWallets: {solana: {connectors: solanaConnectors}},
+          solanaClusters: [
+            {name: "mainnet-beta", rpcUrl: "https://api.mainnet-beta.solana.com"},
+          ],
+        }}>
+        <Component {...pageProps} />
+      </PrivyProvider>
     </QueryClientProvider>
   );
 }
