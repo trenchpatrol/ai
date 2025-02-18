@@ -31,6 +31,7 @@ Capabilities & Analysis Focus:
 
 The result analyze from you should be format like this
 and the format result analyze should be text not markdown format.
+The total number of wallets mean we can say it holders wallet
 
 $symbol
 CA: CA
