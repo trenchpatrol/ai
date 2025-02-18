@@ -14,8 +14,12 @@ const Chat = () => {
 
   const handleStartChat = () => {
     setMessage("");
+
     sendChat.mutateAsync(
-      {userId: user?.id!, userMessage: message},
+      {
+        userId: user?.id!,
+        userMessage: message,
+      },
       {
         onSuccess: () => {
           qc.invalidateQueries({queryKey: ["get-chats"]});

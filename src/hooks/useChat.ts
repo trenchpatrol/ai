@@ -1,13 +1,8 @@
 import {useMutation, UseMutationResult, useQuery} from "@tanstack/react-query";
 import axios from "axios";
 
-type GetChatParams = {
-  userId: string;
-};
-
-type ChatHistory = {
-  messages: Array<{role: string; content: string}>;
-};
+type GetChatParams = {userId: string};
+type ChatHistory = {messages: Array<{role: string; content: string}>};
 
 type SendChatResponse = {
   assistantMessage: {
@@ -18,6 +13,7 @@ type SendChatResponse = {
 
 type SendChatVariables = {
   userId: string;
+  chatId?: string;
   userMessage: string;
 };
 
@@ -35,8 +31,9 @@ export const useGetChat = (params: GetChatParams) => {
 const sendChat = async ({
   userId,
   userMessage,
+  chatId,
 }: SendChatVariables): Promise<SendChatResponse> => {
-  const response = await axios.post("/api/chat", {userId, userMessage});
+  const response = await axios.post("/api/chat", {userId, userMessage, chatId});
   return response.data;
 };
 

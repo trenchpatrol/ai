@@ -28,13 +28,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   try {
     const {data: chats, error} = await supabase
       .from("chats")
-      .select("messages")
+      .select("id, messages")
       .eq("user_id", userId)
       .order("created_at", {ascending: false});
 
     if (error) throw error;
 
-    const response = {chats};
+    const response = {
+      chats: chats.map((chat) => ({
+        chatId: chat.id,
+        messages: chat.messages,
+      })),
+    };
 
     return res.status(200).json(response);
   } catch (error) {
