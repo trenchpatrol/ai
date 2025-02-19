@@ -1,6 +1,7 @@
 import "~/styles/globals.css";
 import type {AppProps} from "next/app";
 import {PrivyProvider} from "@privy-io/react-auth";
+import {Provider as JotaiProvider} from "jotai";
 import {toSolanaWalletConnectors} from "@privy-io/react-auth/solana";
 
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
@@ -43,7 +44,9 @@ export default function App({Component, pageProps}: AppProps) {
             },
           ],
         }}>
-        <Component {...pageProps} />
+        <JotaiProvider>
+          <Component {...pageProps} />
+        </JotaiProvider>
       </PrivyProvider>
     </QueryClientProvider>
   );

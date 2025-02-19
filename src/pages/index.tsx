@@ -1,9 +1,10 @@
 import {GetServerSideProps} from "next";
+import {randomUUID} from "crypto";
 
 export const getServerSideProps: GetServerSideProps = async () => {
   return {
     redirect: {
-      destination: "/chat",
+      destination: `/chat?id=${randomUUID()}&type=new-chat`,
       permanent: false,
     },
   };

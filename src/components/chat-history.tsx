@@ -5,15 +5,19 @@ export const ChatHistory = () => {
   const {data} = useGetChatHistory();
   const {replace} = useRouter();
 
+  const onNavigateToChatDetail = (item: Chat) => {
+    return replace(`/chat?id=${item.chatId}&type=current-chat`);
+  };
+
   return (
     <ul>
       {Number(data?.chats.length) >= 1 ? (
         data?.chats.map((item, index) => (
           <li
-            className="mb-3 cursor-pointer text-sm"
+            className="mb-3 cursor-pointer text-base"
             key={item.chatId}
-            onClick={() => replace(`/chat/${item.chatId}`)}>
-            {index}. {item.chatName}
+            onClick={() => onNavigateToChatDetail(item)}>
+            {index + 1}. {item.chatName}
           </li>
         ))
       ) : (

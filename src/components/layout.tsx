@@ -3,22 +3,29 @@ import {Trash2, User, LogOut, LayoutDashboard, LogIn, MessageCircle} from "lucid
 import {Button} from "~/components/ui";
 import {usePrivy} from "@privy-io/react-auth";
 import {cn} from "~/lib/utils";
-import {geistMono, geistSans} from "~/lib/fonts";
+import {exoTwo} from "~/lib/fonts";
 import {useRouter} from "next/router";
 import {ChatHistory} from "./chat-history";
+import {chatAtom} from "~/state/chat";
+import {useSetAtom} from "jotai";
 
 const Sidebar = () => {
   const {authenticated, logout, ready, login, user} = usePrivy();
-  const {push} = useRouter();
+  const {push, replace} = useRouter();
+
+  const setMessages = useSetAtom(chatAtom);
 
   const onNavigateToNewChat = () => {
-    if (authenticated) return push(`/chat/${self.crypto.randomUUID()}`);
+    if (authenticated) {
+      return replace(`/chat?id=${self.crypto.randomUUID()}&type=new-chat`);
+    }
 
     return login();
   };
 
   const onLogout = () => {
     logout();
+    setMessages(null);
     push("/chat");
   };
 
@@ -26,7 +33,7 @@ const Sidebar = () => {
     <aside
       className={cn(
         "flex h-screen w-[300px] flex-col border-r border-white/10 bg-[#1C1C1C] p-4 text-white",
-        geistMono.className,
+        exoTwo.className,
       )}>
       <Button
         onClick={onNavigateToNewChat}
@@ -88,7 +95,7 @@ export const Layout = ({children}: PropsWithChildren) => {
   return (
     <div className="flex h-screen">
       <Sidebar />
-      <main className={cn("flex-1 overflow-auto p-6 text-[15px]", geistMono.className)}>
+      <main className={cn("flex-1 overflow-auto p-6 text-[15px]", exoTwo.className)}>
         {children}
       </main>
     </div>

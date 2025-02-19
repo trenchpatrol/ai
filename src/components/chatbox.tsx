@@ -1,18 +1,35 @@
 import {usePrivy} from "@privy-io/react-auth";
 import {useQueryClient} from "@tanstack/react-query";
+import {useSetAtom} from "jotai";
 import {Send} from "lucide-react";
-import {useRouter} from "next/router";
 import {useState, useRef, useEffect} from "react";
 import {useSendChat} from "~/hooks/useChat";
+import {chatAtom, isAgentThinkingAtom} from "~/state/chat";
+import {useRouter} from "next/router";
+import {useQueryState} from "next-usequerystate";
 
 export const ChatBox = () => {
   const {authenticated, login} = usePrivy();
-  const {replace, query} = useRouter();
+  const {query} = useRouter();
 
+  const [chatId, setChatId] = useQueryState("id");
+  const [type, setType] = useQueryState("type");
   const [message, setMessage] = useState("");
+
+  const setMessages = useSetAtom(chatAtom);
+  const setIsAgentThinking = useSetAtom(isAgentThinkingAtom);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const sendChat = useSendChat();
   const qc = useQueryClient();
+
+  useEffect(() => {
+    if (query.id) {
+      setChatId(query.id as string);
+    }
+    if (query.type) {
+      setType(query.type as string);
+    }
+  }, [query.id, query.type]);
 
   useEffect(() => {
     if (textAreaRef.current) {
@@ -24,17 +41,34 @@ export const ChatBox = () => {
   const onStartChat = () => {
     if (!authenticated) return login();
 
+    setIsAgentThinking(true);
     setMessage("");
-    return sendChat.mutateAsync(
-      {userMessage: message, chatId: query.id as string},
+    setMessages((prev) => {
+      return [...(prev as Message[]), {content: message, role: "user"}];
+    });
+
+    sendChat.mutateAsync(
+      {
+        userMessage: message,
+        chatId: type === "new-chat" ? undefined : (chatId as string),
+      },
       {
         onSuccess: (data) => {
+          setIsAgentThinking(false);
           qc.invalidateQueries({queryKey: ["get-chats"]});
 
-          if (data.chatId) {
-            qc.invalidateQueries({queryKey: ["get-chat-detail", query.id]});
-            replace(`/chat/${data.chatId}`);
+          if (type === "new-chat") {
+            setType(null);
+            setChatId(data.chatId);
+            return;
           }
+
+          return setMessages((prev) => {
+            return [
+              ...(prev as Message[]),
+              {content: data.assistantMessage.content, role: "assistant"},
+            ];
+          });
         },
       },
     );

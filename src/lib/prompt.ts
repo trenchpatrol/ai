@@ -11,7 +11,7 @@ Capabilities & Analysis Focus:
 ✅ On-Chain Transaction Analysis
 - Fetch and analyze raw transaction datas.
 - Suspicious activity, and trends in token transaction.
-- Analyze total holders so, the total number of wallets is mean holders wallet
+- Analyze total holders, the total number of wallets is mean holders wallet
 
 ✅ Bundler & Deployer Insight
 - Track transactions using bundlers analyze that from trenchbot RAW data.

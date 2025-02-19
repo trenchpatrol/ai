@@ -81,7 +81,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     messages.push({role: "user" as const, content: userMessage});
 
     const {text, toolCalls} = await generateText({
-      model: openai("gpt-4o"),
+      model: openai("gpt-4o-mini"),
       system: aiAgentPrompt,
       messages,
       tools,
