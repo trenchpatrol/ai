@@ -1,8 +1,12 @@
+import {usePrivy} from "@privy-io/react-auth";
 import {useMutation, UseMutationResult, useQuery} from "@tanstack/react-query";
+import {useRouter} from "next/router";
 import axios from "axios";
 
-type GetChatParams = {userId: string};
-type ChatHistory = {messages: Array<{role: string; content: string}>};
+type ChatHistory = {
+  messages: Array<{role: string; content: string}>;
+  chatId: string;
+};
 
 type SendChatResponse = {
   assistantMessage: {
@@ -17,12 +21,32 @@ type SendChatVariables = {
   userMessage: string;
 };
 
-export const useGetChat = (params: GetChatParams) => {
+export const useGetChat = () => {
+  const {user} = usePrivy();
+  const userId = user?.id;
+
   return useQuery<ChatHistory, Error>({
-    queryKey: ["get-chats", params.userId],
-    enabled: !!params.userId,
+    queryKey: ["get-chats", userId],
+    enabled: !!userId,
     queryFn: async () => {
-      const res = await axios.get(`/api/chat-history?userId=${params.userId}`);
+      const res = await axios.get(`/api/chat-history?userId=${userId}`);
+      return res.data;
+    },
+  });
+};
+
+export const useGetChatDetail = () => {
+  const {user} = usePrivy();
+  const {query} = useRouter();
+  const {id: chatId} = query;
+
+  const userId = user?.id;
+
+  return useQuery<ChatHistory, Error>({
+    queryKey: ["get-chat-detail", userId, chatId],
+    enabled: !!userId && !!chatId,
+    queryFn: async () => {
+      const res = await axios.get(`/api/chat/detail?userId=${userId}&chatId=${chatId}`);
       return res.data;
     },
   });
@@ -40,7 +64,11 @@ const sendChat = async ({
 export const useSendChat = (): UseMutationResult<
   SendChatResponse,
   Error,
-  SendChatVariables
+  Omit<SendChatVariables, "userId">
 > => {
-  return useMutation<SendChatResponse, Error, SendChatVariables>({mutationFn: sendChat});
+  const {user} = usePrivy();
+
+  return useMutation<SendChatResponse, Error, Omit<SendChatVariables, "userId">>({
+    mutationFn: (params) => sendChat({...params, userId: user?.id as string}),
+  });
 };

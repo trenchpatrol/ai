@@ -21,9 +21,7 @@ export default function App({Component, pageProps}: AppProps) {
     });
   }
 
-  const solanaConnectors = toSolanaWalletConnectors({
-    // Optional configuration options for each connector
-  });
+  const solanaConnectors = toSolanaWalletConnectors({});
 
   return (
     <QueryClientProvider client={queryClientRef.current}>
@@ -33,9 +31,16 @@ export default function App({Component, pageProps}: AppProps) {
       <PrivyProvider
         appId="cm78xp5gj01bge4zn7eq813yw"
         config={{
-          externalWallets: {solana: {connectors: solanaConnectors}},
+          externalWallets: {
+            solana: {connectors: solanaConnectors},
+            walletConnect: {enabled: false},
+          },
+          appearance: {theme: "dark", walletList: ["phantom", "backpack", "solflare"]},
           solanaClusters: [
-            {name: "mainnet-beta", rpcUrl: "https://api.mainnet-beta.solana.com"},
+            {
+              name: "mainnet-beta",
+              rpcUrl: "https://api.mainnet-beta.solana.com",
+            },
           ],
         }}>
         <Component {...pageProps} />
