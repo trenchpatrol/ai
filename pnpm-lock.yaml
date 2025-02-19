@@ -3,7 +3,6 @@ lockfileVersion: 5.4
 specifiers:
   '@ai-sdk/openai': ^1.1.12
   '@eslint/eslintrc': ^3
-  '@microsoft/clarity': ^1.0.0
   '@privy-io/react-auth': ^2.4.3
   '@radix-ui/react-avatar': ^1.1.3
   '@radix-ui/react-dialog': ^1.1.6
@@ -31,6 +30,7 @@ specifiers:
   prettier-plugin-tailwindcss: ^0.6.11
   react: ^18.0.0
   react-dom: ^18.0.0
+  react-microsoft-clarity: ^2.0.0
   tailwind-merge: ^3.0.1
   tailwindcss: ^3.4.1
   tailwindcss-animate: ^1.0.7
@@ -40,7 +40,6 @@ specifiers:
 
 dependencies:
   '@ai-sdk/openai': 1.1.12_zod@3.24.1
-  '@microsoft/clarity': 1.0.0
   '@privy-io/react-auth': 2.4.3_6rbjvbpudgjxxun7v7ag3fbvha
   '@radix-ui/react-avatar': 1.1.3_hgwzjccycila55edrvdsjkqvqa
   '@radix-ui/react-dialog': 1.1.6_hgwzjccycila55edrvdsjkqvqa
@@ -58,6 +57,7 @@ dependencies:
   next-usequerystate: 1.20.0_next@14.2.24
   react: 18.3.1
   react-dom: 18.3.1_react@18.3.1
+  react-microsoft-clarity: 2.0.0
   tailwind-merge: 3.0.1
   tailwindcss-animate: 1.0.7_tailwindcss@3.4.17
   zod: 3.24.1
@@ -722,10 +722,6 @@ packages:
       superstruct: 1.0.4
     transitivePeerDependencies:
       - supports-color
-    dev: false
-
-  /@microsoft/clarity/1.0.0:
-    resolution: {integrity: sha512-2QY6SmXnqRj6dWhNY8NYCN3e53j4zCFebH4wGnNhdGV1mqAsQwql2fT0w8TISxCvwwfVp8idsWLIdrRHOms1PQ==}
     dev: false
 
   /@motionone/animation/10.18.0:
@@ -5339,6 +5335,10 @@ packages:
   /react-is/16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
     dev: true
+
+  /react-microsoft-clarity/2.0.0:
+    resolution: {integrity: sha512-Hnbmiv+/vHSekS+Diho7SzvigNLNm+wayZMhxS4otaxPBlN3ccpY7k+PJd2Ytg3F6umU3JZzFtLzvK1WmfdhpA==}
+    dev: false
 
   /react-remove-scroll-bar/2.3.8_6lfwo5yfeizuujkabiorn5nfn4:
     resolution: {integrity: sha512-9r+yi9+mgU33AKcj6IbT9oRCO78WriSj6t/cF8DWBZJ9aOGPOTEDvdUDz1FwKim7QXWwmHqtdHnRJfhAxEG46Q==}

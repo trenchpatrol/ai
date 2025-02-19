@@ -3,15 +3,11 @@ import type {AppProps} from "next/app";
 import {PrivyProvider} from "@privy-io/react-auth";
 import {Provider as JotaiProvider} from "jotai";
 import {toSolanaWalletConnectors} from "@privy-io/react-auth/solana";
-import Clarity from "@microsoft/clarity";
+import {clarity} from "react-microsoft-clarity";
 
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 import {ReactQueryDevtools} from "@tanstack/react-query-devtools";
-import {useRef} from "react";
-
-if (process.env.NODE_ENV === "production") {
-  Clarity.init("qca5gan1q3");
-}
+import {useEffect, useRef} from "react";
 
 export default function App({Component, pageProps}: AppProps) {
   const queryClientRef = useRef<QueryClient | null>(null);
@@ -28,6 +24,12 @@ export default function App({Component, pageProps}: AppProps) {
   }
 
   const solanaConnectors = toSolanaWalletConnectors({});
+
+  useEffect(() => {
+    if (process.env.NODE_ENV === "production") {
+      clarity.init("qca5gan1q3");
+    }
+  }, []);
 
   return (
     <QueryClientProvider client={queryClientRef.current}>
