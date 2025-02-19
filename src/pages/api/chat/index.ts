@@ -115,7 +115,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         });
 
         const {text: finalText} = await generateText({
-          model: openai("gpt-4"),
+          model: openai("gpt-4o-mini"),
           system: aiAgentPrompt,
           messages,
         });
