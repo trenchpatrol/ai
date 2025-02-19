@@ -1,19 +1,11 @@
 import React, {PropsWithChildren} from "react";
-import {
-  Trash2,
-  User,
-  LogOut,
-  LayoutDashboard,
-  ListCollapseIcon,
-  LogIn,
-  Loader2,
-  Loader,
-} from "lucide-react";
+import {Trash2, User, LogOut, LayoutDashboard, LogIn, MessageCircle} from "lucide-react";
 import {Button} from "~/components/ui";
 import {usePrivy} from "@privy-io/react-auth";
 import {cn} from "~/lib/utils";
-import {geistSans} from "~/lib/fonts";
+import {geistMono, geistSans} from "~/lib/fonts";
 import {useRouter} from "next/router";
+import {ChatHistory} from "./chat-history";
 
 const Sidebar = () => {
   const {authenticated, logout, ready, login, user} = usePrivy();
@@ -25,11 +17,16 @@ const Sidebar = () => {
     return login();
   };
 
+  const onLogout = () => {
+    logout();
+    push("/chat");
+  };
+
   return (
     <aside
       className={cn(
         "flex h-screen w-[300px] flex-col border-r border-white/10 bg-[#1C1C1C] p-4 text-white",
-        geistSans,
+        geistMono.className,
       )}>
       <Button
         onClick={onNavigateToNewChat}
@@ -42,9 +39,17 @@ const Sidebar = () => {
           <li className="flex cursor-pointer items-center gap-2 rounded-md p-2.5 hover:bg-[#00FFA3] hover:text-black">
             <LayoutDashboard size={20} /> Home
           </li>
-          <li className="flex cursor-pointer items-center gap-2 rounded-md p-2.5 hover:bg-[#00FFA3] hover:text-black">
-            <ListCollapseIcon size={20} /> Chat History
-          </li>
+          {authenticated && (
+            <li className="p-2.5">
+              <div className="flex items-center space-x-2">
+                <MessageCircle size={20} />
+                <p>Recents</p>
+              </div>
+              <div className="mt-5">
+                <ChatHistory />
+              </div>
+            </li>
+          )}
         </ul>
       </nav>
 
@@ -60,7 +65,7 @@ const Sidebar = () => {
               </li>
               <li
                 className="flex cursor-pointer items-center gap-2 rounded-md p-2.5 text-red-400 hover:bg-[#00FFA3] hover:text-black"
-                onClick={logout}>
+                onClick={onLogout}>
                 <LogOut size={20} /> Log out
               </li>
             </>
@@ -83,7 +88,9 @@ export const Layout = ({children}: PropsWithChildren) => {
   return (
     <div className="flex h-screen">
       <Sidebar />
-      <main className="flex-1 overflow-auto p-6">{children}</main>
+      <main className={cn("flex-1 overflow-auto p-6 text-[15px]", geistMono.className)}>
+        {children}
+      </main>
     </div>
   );
 };

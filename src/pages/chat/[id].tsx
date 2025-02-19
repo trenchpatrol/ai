@@ -1,29 +1,12 @@
-import {useState} from "react";
-import {useGetChatDetail, useSendChat} from "~/hooks/useChat";
-import {useQueryClient} from "@tanstack/react-query";
+import {useGetChatDetail} from "~/hooks/useChat";
 import {Layout} from "~/components/layout";
-import Image from "next/image";
 import {Loader} from "lucide-react";
+import {ListChatConversation} from "~/components/list-chat-conversations";
+import {ChatBox} from "~/components/chatbox";
+import Image from "next/image";
 
 const ChatId = () => {
-  const [message, setMessage] = useState("");
-
   const {data, isLoading} = useGetChatDetail();
-  const sendChat = useSendChat();
-  const qc = useQueryClient();
-
-  const onStartChat = () => {
-    setMessage("");
-
-    sendChat.mutateAsync(
-      {userMessage: message},
-      {
-        onSuccess: () => {
-          qc.invalidateQueries({queryKey: ["get-chats"]});
-        },
-      },
-    );
-  };
 
   return (
     <Layout>
@@ -32,23 +15,23 @@ const ChatId = () => {
           <div className="flex justify-center">
             <div className="relative">
               <Loader className="h-6 w-6 animate-spin text-[#00FFA3]" />
-              <div className="absolute inset-0 animate-ping rounded-full bg-[#00FFA3]/90 opacity-30"></div>
+              <div className="absolute inset-0 animate-ping rounded-full bg-[#00FFA3]/90 opacity-30" />
             </div>
           </div>
         ) : (
-          data?.messages.length === 0 && (
-            <div>
-              <Image
-                style={{width: "220px", height: "270px"}}
-                src="/img/logo-black.png"
-                alt="logo-black"
-                width={220}
-                height={270}
-                priority
-              />
+          <div className="relative w-full">
+            <div className="absolute left-1/2 top-1/2 -z-[1] -translate-x-1/2 -translate-y-1/2 transform">
+              <div className="h-80 w-64 overflow-hidden">
+                <Image src="/img/logo-black.png" alt="logo-black" fill priority />
+              </div>
             </div>
-          )
+            <ListChatConversation data={data} />
+          </div>
         )}
+      </div>
+
+      <div className="fixed bottom-5 left-[60%] flex w-full -translate-x-1/2 items-center justify-center">
+        <ChatBox />
       </div>
     </Layout>
   );

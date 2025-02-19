@@ -3,16 +3,12 @@ import {useMutation, UseMutationResult, useQuery} from "@tanstack/react-query";
 import {useRouter} from "next/router";
 import axios from "axios";
 
-type ChatHistory = {
-  messages: Array<{role: string; content: string}>;
-  chatId: string;
-};
-
 type SendChatResponse = {
   assistantMessage: {
     role: "assistant";
     content: string;
   };
+  chatId: string;
 };
 
 type SendChatVariables = {
@@ -21,11 +17,11 @@ type SendChatVariables = {
   userMessage: string;
 };
 
-export const useGetChat = () => {
+export const useGetChatHistory = () => {
   const {user} = usePrivy();
   const userId = user?.id;
 
-  return useQuery<ChatHistory, Error>({
+  return useQuery<ChatListHistory, Error>({
     queryKey: ["get-chats", userId],
     enabled: !!userId,
     queryFn: async () => {
@@ -42,8 +38,8 @@ export const useGetChatDetail = () => {
 
   const userId = user?.id;
 
-  return useQuery<ChatHistory, Error>({
-    queryKey: ["get-chat-detail", userId, chatId],
+  return useQuery<ChatHistoryDetail, Error>({
+    queryKey: ["get-chat-detail", chatId],
     enabled: !!userId && !!chatId,
     queryFn: async () => {
       const res = await axios.get(`/api/chat/detail?userId=${userId}&chatId=${chatId}`);

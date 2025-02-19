@@ -137,15 +137,26 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         .eq("id", chatId);
       insertOrUpdateError = updateError;
     } else {
-      const {error: insertError} = await supabase
+      const {data: insertData, error: insertError} = await supabase
         .from("chats")
-        .insert([{user_id: userId, messages}]);
+        .insert([{user_id: userId, messages, chat_name: userMessage.slice(0, 25)}])
+        .select("id")
+        .single();
+
+      insertOrUpdateError = insertError;
+
+      if (insertData) {
+        chatId = insertData.id;
+      }
+
       insertOrUpdateError = insertError;
     }
 
     if (insertOrUpdateError) throw insertOrUpdateError;
 
-    return res.status(200).json({assistantMessage: messages[messages.length - 1]});
+    return res
+      .status(200)
+      .json({assistantMessage: messages[messages.length - 1], chatId});
   } catch (error) {
     console.error("Error creating or updating chat:", error);
     return res.status(500).json({error: "Internal server error"});

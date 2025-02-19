@@ -28,7 +28,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   try {
     const {data: chats, error} = await supabase
       .from("chats")
-      .select("id, messages")
+      .select("id, messages, chat_name")
       .eq("user_id", userId)
       .order("created_at", {ascending: false});
 
@@ -38,6 +38,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       chats: chats.map((chat) => ({
         chatId: chat.id,
         messages: chat.messages,
+        chatName: chat.chat_name,
       })),
     };
 
