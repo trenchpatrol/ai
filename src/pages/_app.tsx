@@ -3,6 +3,7 @@ import type {AppProps} from "next/app";
 import {PrivyProvider} from "@privy-io/react-auth";
 import {Provider as JotaiProvider} from "jotai";
 import {toSolanaWalletConnectors} from "@privy-io/react-auth/solana";
+import {Analytics} from "@vercel/analytics/next";
 
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 import {ReactQueryDevtools} from "@tanstack/react-query-devtools";
@@ -46,6 +47,7 @@ export default function App({Component, pageProps}: AppProps) {
         }}>
         <JotaiProvider>
           <Component {...pageProps} />
+          <Analytics />
         </JotaiProvider>
       </PrivyProvider>
     </QueryClientProvider>

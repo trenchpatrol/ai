@@ -14,6 +14,7 @@ specifiers:
   '@types/node': ^20
   '@types/react': ^19
   '@types/react-dom': ^19
+  '@vercel/analytics': ^1.5.0
   ai: ^4.1.41
   axios: ^1.7.9
   bs58: ^6.0.0
@@ -46,6 +47,7 @@ dependencies:
   '@solana/web3.js': 1.98.0
   '@supabase/supabase-js': 2.48.1
   '@tanstack/react-query': 5.66.3_react@18.3.1
+  '@vercel/analytics': 1.5.0_next@14.2.24+react@18.3.1
   ai: 4.1.41_react@18.3.1+zod@3.24.1
   axios: 1.7.9
   class-variance-authority: 0.7.1
@@ -1919,6 +1921,36 @@ packages:
       '@typescript-eslint/types': 8.24.0
       eslint-visitor-keys: 4.2.0
     dev: true
+
+  /@vercel/analytics/1.5.0_next@14.2.24+react@18.3.1:
+    resolution: {integrity: sha512-MYsBzfPki4gthY5HnYN7jgInhAZ7Ac1cYDoRWFomwGHWEX7odTEzbtg9kf/QSo7XEsEAqlQugA6gJ2WS2DEa3g==}
+    peerDependencies:
+      '@remix-run/react': ^2
+      '@sveltejs/kit': ^1 || ^2
+      next: '>= 13'
+      react: ^18 || ^19 || ^19.0.0-rc
+      svelte: '>= 4'
+      vue: ^3
+      vue-router: ^4
+    peerDependenciesMeta:
+      '@remix-run/react':
+        optional: true
+      '@sveltejs/kit':
+        optional: true
+      next:
+        optional: true
+      react:
+        optional: true
+      svelte:
+        optional: true
+      vue:
+        optional: true
+      vue-router:
+        optional: true
+    dependencies:
+      next: 14.2.24_nnrd3gsncyragczmpvfhocinkq
+      react: 18.3.1
+    dev: false
 
   /@wallet-standard/app/1.1.0:
     resolution: {integrity: sha512-3CijvrO9utx598kjr45hTbbeeykQrQfKmSnxeWOgU25TOEpvcipD/bYDQWIqUv1Oc6KK4YStokSMu/FBNecGUQ==}
