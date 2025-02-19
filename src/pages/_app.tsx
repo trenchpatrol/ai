@@ -3,11 +3,11 @@ import type {AppProps} from "next/app";
 import {PrivyProvider} from "@privy-io/react-auth";
 import {Provider as JotaiProvider} from "jotai";
 import {toSolanaWalletConnectors} from "@privy-io/react-auth/solana";
-import {clarity} from "react-microsoft-clarity";
+import Script from "next/script";
 
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 import {ReactQueryDevtools} from "@tanstack/react-query-devtools";
-import {useEffect, useRef} from "react";
+import {useRef} from "react";
 
 export default function App({Component, pageProps}: AppProps) {
   const queryClientRef = useRef<QueryClient | null>(null);
@@ -25,36 +25,42 @@ export default function App({Component, pageProps}: AppProps) {
 
   const solanaConnectors = toSolanaWalletConnectors({});
 
-  useEffect(() => {
-    if (process.env.NODE_ENV === "production") {
-      clarity.init("qca5gan1q3");
-    }
-  }, []);
-
   return (
-    <QueryClientProvider client={queryClientRef.current}>
-      {process.env.NODE_ENV === "development" ? (
-        <ReactQueryDevtools initialIsOpen={false} />
-      ) : null}
-      <PrivyProvider
-        appId="cm78xp5gj01bge4zn7eq813yw"
-        config={{
-          externalWallets: {
-            solana: {connectors: solanaConnectors},
-            walletConnect: {enabled: false},
-          },
-          appearance: {theme: "dark", walletList: ["phantom", "backpack", "solflare"]},
-          solanaClusters: [
-            {
-              name: "mainnet-beta",
-              rpcUrl: "https://api.mainnet-beta.solana.com",
+    <>
+      <Script id="microsoft-clarity" strategy="afterInteractive">
+        {`
+          (function(c,l,a,r,i,t,y){
+              c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+              t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+              y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+          })(window, document, "clarity", "script", "qca5gan1q3");
+        `}
+      </Script>
+
+      <QueryClientProvider client={queryClientRef.current}>
+        {process.env.NODE_ENV === "development" ? (
+          <ReactQueryDevtools initialIsOpen={false} />
+        ) : null}
+        <PrivyProvider
+          appId="cm78xp5gj01bge4zn7eq813yw"
+          config={{
+            externalWallets: {
+              solana: {connectors: solanaConnectors},
+              walletConnect: {enabled: false},
             },
-          ],
-        }}>
-        <JotaiProvider>
-          <Component {...pageProps} />
-        </JotaiProvider>
-      </PrivyProvider>
-    </QueryClientProvider>
+            appearance: {theme: "dark", walletList: ["phantom", "backpack", "solflare"]},
+            solanaClusters: [
+              {
+                name: "mainnet-beta",
+                rpcUrl: "https://api.mainnet-beta.solana.com",
+              },
+            ],
+          }}>
+          <JotaiProvider>
+            <Component {...pageProps} />
+          </JotaiProvider>
+        </PrivyProvider>
+      </QueryClientProvider>
+    </>
   );
 }
