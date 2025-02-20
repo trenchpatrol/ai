@@ -9,9 +9,39 @@ import {randomUUID} from "crypto";
 import Image from "next/image";
 import Head from "next/head";
 
+import {MessageSquare, Sparkles, ShieldAlert} from "lucide-react";
+import {useAtomValue} from "jotai";
+import {isAgentThinkingAtom} from "~/state/chat";
+
+type FeatureSectionProps = {
+  icon: React.ReactNode;
+  title: string;
+  items: string[];
+};
+
+const FeatureSection: React.FC<FeatureSectionProps> = ({icon, title, items}) => {
+  return (
+    <div className="h-[320px] w-full max-w-xs rounded-2xl bg-zinc-900 p-6 shadow-lg">
+      <div className="mb-4 flex items-center space-x-3">
+        {icon}
+        <h2 className="text-lg font-semibold text-white">{title}</h2>
+      </div>
+      <ul className="space-y-2">
+        {items.map((item, index) => (
+          <li key={index} className="rounded-md bg-zinc-800 p-3 text-white">
+            {item}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
 const Chat = () => {
   const {isLoading, data} = useGetChatDetail();
   const [type] = useQueryState("type");
+
+  const isAgentThinking = useAtomValue(isAgentThinkingAtom);
 
   return (
     <Layout>
@@ -39,10 +69,45 @@ const Chat = () => {
                 </div>
               </div>
             ) : (
-              <div className="absolute left-1/2 top-1/2 -z-[1] -translate-x-1/2 -translate-y-1/2 transform">
-                <div className="h-16 w-96 overflow-hidden">
-                  <Image src="/img/logo-full.png" alt="logo-full" fill priority />
+              <div className="fixed left-[30%] top-[35%]">
+                <div className="fixed left-[48%]">
+                  <div className="h-16 w-96 overflow-hidden">
+                    <Image src="/img/logo-full.png" alt="logo-full" fill priority />
+                  </div>
                 </div>
+
+                {!isAgentThinking && (
+                  <div className="mt-16 w-full max-w-full">
+                    <div className="flex w-full flex-col items-center justify-center gap-4 px-12 py-10 md:flex-row">
+                      <FeatureSection
+                        icon={<MessageSquare className="text-white" />}
+                        title="Examples"
+                        items={[
+                          "Explain what is Solana?",
+                          "Explain what is Bitcoin?",
+                          "Explain what is Crypto?",
+                        ]}
+                      />
+                      <FeatureSection
+                        icon={<Sparkles className="text-white" />}
+                        title="Capabilities"
+                        items={[
+                          "Remembers what user said earlier in the conversation.",
+                          "Allows user to provide follow-up corrections.",
+                          "Analyze token safety with CA",
+                        ]}
+                      />
+                      <FeatureSection
+                        icon={<ShieldAlert className="text-white" />}
+                        title="Limitations"
+                        items={[
+                          "May occasionally generate incorrect information.",
+                          "May occasionally produce biased and wrong content",
+                        ]}
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 
@@ -51,7 +116,7 @@ const Chat = () => {
         )}
       </div>
 
-      <div className="fixed bottom-5 left-[60%] flex w-full -translate-x-1/2 items-center justify-center">
+      <div className="fixed bottom-5 left-[58%] flex w-full -translate-x-1/2 items-center justify-center">
         <ChatBox />
       </div>
     </Layout>
