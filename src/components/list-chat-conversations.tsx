@@ -1,14 +1,22 @@
 import {usePrivy} from "@privy-io/react-auth";
 import {useAtom, useAtomValue} from "jotai";
-import {useEffect, useRef} from "react";
+import {useEffect, useRef, useState} from "react";
 import {Avatar, AvatarFallback, AvatarImage} from "~/components/ui";
 import {cn} from "~/lib/utils";
-import {chatAtom, isAgentThinkingAtom} from "~/state/chat";
+import {chatAtom, isAgentThinkingAtom, isAgentWritingResponseAtom} from "~/state/chat";
 
 export const ListChatConversation: React.FC<{messages: Message[]}> = ({messages}) => {
   const {user} = usePrivy();
 
+  const [typingProgress, setTypingProgress] = useState(0);
   const [chatsState, setChatsState] = useAtom(chatAtom);
+  const [isAgentWriting, setIsAgentWriting] = useAtom(isAgentWritingResponseAtom);
+
+  const isAgentThinking = useAtomValue(isAgentThinkingAtom);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const chats = chatsState?.filter((c) => c.role !== "system");
+
+  const lastMessage = chats?.[chats.length - 1];
 
   useEffect(() => {
     if (messages) setChatsState(messages);
@@ -16,15 +24,31 @@ export const ListChatConversation: React.FC<{messages: Message[]}> = ({messages}
     return () => setChatsState(null);
   }, [messages]);
 
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const isAgentThinking = useAtomValue(isAgentThinkingAtom);
-  const chats = chatsState?.filter((c) => c.role !== "system");
+  useEffect(() => {
+    if (isAgentWriting && lastMessage) {
+      setTypingProgress(0);
+
+      const interval = setInterval(() => {
+        setTypingProgress((prev) => {
+          if (prev < lastMessage.content.length) {
+            return prev + 1;
+          } else {
+            clearInterval(interval);
+            setIsAgentWriting(false);
+            return prev;
+          }
+        });
+      }, 10);
+
+      return () => clearInterval(interval);
+    }
+  }, [isAgentWriting, lastMessage, setIsAgentWriting]);
 
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
-  }, [chats]);
+  }, [chats, typingProgress]);
 
   const formatMessageText = (text: string) => {
     return text.split("\n").map((line, i) => (
@@ -63,18 +87,22 @@ export const ListChatConversation: React.FC<{messages: Message[]}> = ({messages}
           </div>
 
           {chat.role !== "user" ? (
-            <div className="mt-1 flex flex-col space-y-2">
+            <div className="mt-1 flex w-4/5 flex-col space-y-2">
               <span className="text-[14px] text-gray-400">TrenchPatrol Agent</span>
               <div
                 className={cn(
                   "mt-1 max-w-[60%] whitespace-pre-wrap break-words rounded-lg p-3 text-base",
                   "border border-white/20 bg-[#1c1c1c]",
                 )}>
-                {formatMessageText(chat.content)}
+                {formatMessageText(
+                  index === chats.length - 1 && isAgentWriting
+                    ? (lastMessage?.content.substring(0, typingProgress) as string)
+                    : chat.content,
+                )}
               </div>
             </div>
           ) : (
-            <div className="max-w-[50%] rounded-lg bg-green-500 p-3 text-base text-black">
+            <div className="max-w-[50%] rounded-lg bg-[#00FFA3] p-3 text-base text-black">
               {formatMessageText(chat.content)}
             </div>
           )}
@@ -91,7 +119,7 @@ export const ListChatConversation: React.FC<{messages: Message[]}> = ({messages}
               />
             </Avatar>
             <div className="mt-1 flex flex-col space-y-1">
-              <span className="text-xs text-gray-400">TrenchPatrol Agent</span>
+              <span className="text-[14px] text-gray-400">TrenchPatrol Agent</span>
               <div>Thinking...</div>
             </div>
           </div>

@@ -4,7 +4,7 @@ import {useSetAtom} from "jotai";
 import {Send} from "lucide-react";
 import {useState, useRef, useEffect} from "react";
 import {useSendChat} from "~/hooks/useChat";
-import {chatAtom, isAgentThinkingAtom} from "~/state/chat";
+import {chatAtom, isAgentThinkingAtom, isAgentWritingResponseAtom} from "~/state/chat";
 import {useRouter} from "next/router";
 import {useQueryState} from "next-usequerystate";
 
@@ -18,6 +18,7 @@ export const ChatBox = () => {
 
   const setMessages = useSetAtom(chatAtom);
   const setIsAgentThinking = useSetAtom(isAgentThinkingAtom);
+  const setIsAgentWritingResponse = useSetAtom(isAgentWritingResponseAtom);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const sendChat = useSendChat();
   const qc = useQueryClient();
@@ -55,10 +56,11 @@ export const ChatBox = () => {
       {
         onSuccess: (data) => {
           setIsAgentThinking(false);
+          setIsAgentWritingResponse(true);
           qc.invalidateQueries({queryKey: ["get-chats"]});
 
           if (type === "new-chat") {
-            setType(null);
+            setType("current-chat");
             setChatId(data.chatId);
             return;
           }

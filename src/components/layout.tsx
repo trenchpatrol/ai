@@ -43,7 +43,7 @@ const Sidebar = () => {
 
       <nav className="flex-1">
         <ul className="space-y-2">
-          <li className="flex cursor-pointer items-center gap-2 rounded-md p-2.5 hover:bg-[#00FFA3] hover:text-black">
+          <li className="flex cursor-pointer items-center gap-2 rounded-md px-2.5 pb-2 pt-2.5 hover:bg-[#00FFA3] hover:text-black">
             <LayoutDashboard size={20} /> Home
           </li>
           {authenticated && (
