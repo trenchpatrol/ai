@@ -87,7 +87,10 @@ export const ChatBox = () => {
         rows={1}
         style={{minHeight: "40px"}}
       />
-      <button className="p-2 text-gray-400 hover:text-white" onClick={onStartChat}>
+      <button
+        disabled={!message}
+        className="p-2 text-gray-400 hover:text-white"
+        onClick={onStartChat}>
         <Send size={20} />
       </button>
     </div>
