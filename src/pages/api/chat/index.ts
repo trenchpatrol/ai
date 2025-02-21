@@ -4,13 +4,26 @@ import {openai} from "@ai-sdk/openai";
 import {z} from "zod";
 import {PostgrestError, createClient} from "@supabase/supabase-js";
 import {aiAgentPrompt} from "~/lib/prompt";
+import {omit} from "radash";
 
 type SolanaAnalysisResult = {
-  trenchbot: any;
-  antirug: any;
+  trenchbot: TrenchBotResponse;
+  antirug: AntiRugAgentResponse;
 };
 
+type CacheEntry = {
+  data: SolanaAnalysisResult;
+  timestamp: number;
+};
+
+const CACHE_EXPIRY_MS = 30 * 1000;
+const analysisCache = new Map<string, CacheEntry>();
 const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_API_KEY!);
+
+const isCacheValid = (timestamp: number): boolean => {
+  const now = Date.now();
+  return now - timestamp < CACHE_EXPIRY_MS;
+};
 
 const analyzeSolanaSchema = z.object({
   address: z.string().describe("A valid Solana contract address"),
@@ -23,7 +36,19 @@ const tools: ToolSet = {
     execute: async ({
       address,
     }: z.infer<typeof analyzeSolanaSchema>): Promise<SolanaAnalysisResult> => {
+      if (analysisCache.has(address)) {
+        const cacheEntry = analysisCache.get(address)!;
+        if (isCacheValid(cacheEntry.timestamp)) {
+          console.log(`- Using cached analysis for address: ${address}`);
+          return cacheEntry.data;
+        } else {
+          console.log(`- Cache expired for address: ${address}`);
+          analysisCache.delete(address);
+        }
+      }
+
       try {
+        console.log(` - Fetching analysis for address: ${address}`);
         const [trenchbotRes, antirugRes] = await Promise.all([
           fetch(`${process.env.API_URL}/api/trenchbot/${address}`).then((res) =>
             res.json(),
@@ -35,10 +60,17 @@ const tools: ToolSet = {
           }).then((res) => res.json()),
         ]);
 
-        return {
+        const result = {
           trenchbot: trenchbotRes,
           antirug: antirugRes,
         };
+
+        analysisCache.set(address, {
+          data: result,
+          timestamp: Date.now(),
+        });
+
+        return result;
       } catch (error) {
         console.error("Error fetching Solana data:", error);
         throw new Error("Failed to fetch blockchain data.");
@@ -87,6 +119,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       tools,
     });
 
+    let finalResponse = text;
+    let addressAnalyzed = false;
+
     if (toolCalls && toolCalls.length > 0) {
       const toolResults = await Promise.all(
         toolCalls.map(async (call) => {
@@ -95,6 +130,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             call.toolName === "analyzeSolanaAddress" &&
             tools[call.toolName]
           ) {
+            addressAnalyzed = true;
             const tool = tools[call.toolName] as unknown as {
               execute: (args: any) => Promise<SolanaAnalysisResult>;
             };
@@ -109,24 +145,49 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       );
 
       if (validResults.length > 0) {
-        messages.push({
-          role: "system",
-          content: `Analysis for this data: ${JSON.stringify(validResults)}`,
-        });
+        const sanitizeResults = validResults[0];
+
+        const getTopTenHolders = () => {
+          if (sanitizeResults?.trenchbot?.bonded === false) {
+            return sanitizeResults?.antirug?.checkCa?.topTenHolders.filter(
+              (_, index) => index !== 0,
+            );
+          }
+
+          return sanitizeResults?.antirug?.checkCa?.topTenHolders;
+        };
+
+        const actualResults = {
+          antirug: omit(sanitizeResults?.antirug?.checkCa, [
+            "topTenHolders",
+            "topIndvPer",
+            "topTenPer",
+          ]),
+          trenchbot: sanitizeResults?.trenchbot,
+          topTenHolders: getTopTenHolders(),
+        };
+
+        console.log(actualResults, "Results fetching");
+
+        const analysisMessages = [
+          ...messages,
+          {
+            role: "system" as const,
+            content: `Analysis for this data: ${JSON.stringify(actualResults)}`,
+          },
+        ];
 
         const {text: finalText} = await generateText({
           model: openai("gpt-4o-mini"),
           system: aiAgentPrompt,
-          messages,
+          messages: analysisMessages,
         });
 
-        messages.push({role: "assistant", content: finalText});
-      } else {
-        messages.push({role: "assistant", content: text});
+        finalResponse = finalText;
       }
-    } else {
-      messages.push({role: "assistant", content: text});
     }
+
+    messages.push({role: "assistant" as const, content: finalResponse});
 
     let insertOrUpdateError: PostgrestError | null;
 
@@ -139,7 +200,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     } else {
       const {data: insertData, error: insertError} = await supabase
         .from("chats")
-        .insert([{user_id: userId, messages, chat_name: userMessage.slice(0, 25)}])
+        .insert([{user_id: userId, messages, chat_name: userMessage.slice(0, 20)}])
         .select("id")
         .single();
 
@@ -148,17 +209,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       if (insertData) {
         chatId = insertData.id;
       }
-
-      insertOrUpdateError = insertError;
     }
 
     if (insertOrUpdateError) throw insertOrUpdateError;
+
+    if (addressAnalyzed) {
+      const validCacheCount = Array.from(analysisCache.values()).filter((entry) =>
+        isCacheValid(entry.timestamp),
+      ).length;
+
+      console.log(
+        ` - Address analyzed successfully. Valid cache entries: ${validCacheCount}`,
+      );
+    }
 
     return res
       .status(200)
       .json({assistantMessage: messages[messages.length - 1], chatId});
   } catch (error) {
-    console.error("Error creating or updating chat:", error);
+    console.error("Error processing chat:", error);
     return res.status(500).json({error: "Internal server error"});
   }
 }

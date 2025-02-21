@@ -8,12 +8,16 @@ import {useRouter} from "next/router";
 import {ChatHistory} from "./chat-history";
 import {chatAtom} from "~/state/chat";
 import {useSetAtom} from "jotai";
+import {useDeleteChat} from "~/hooks/useChat";
 
 const Sidebar = () => {
   const {authenticated, logout, ready, login, user} = usePrivy();
-  const {push, replace} = useRouter();
+  const {push, replace, query} = useRouter();
 
   const setMessages = useSetAtom(chatAtom);
+  const deleteChat = useDeleteChat();
+  const isCurrentChat = query.type === "current-chat";
+  const chatId = query.id as string;
 
   const onNavigateToNewChat = () => {
     if (authenticated) {
@@ -64,9 +68,13 @@ const Sidebar = () => {
         <ul className="space-y-2">
           {!!user && (
             <>
-              <li className="flex cursor-pointer items-center gap-2 rounded-md p-2.5 hover:bg-[#00FFA3] hover:text-black">
-                <Trash2 size={20} /> Delete conversations
-              </li>
+              {isCurrentChat && (
+                <li
+                  onClick={() => deleteChat.mutate({chatId})}
+                  className="flex cursor-pointer items-center gap-2 rounded-md p-2.5 hover:bg-[#00FFA3] hover:text-black">
+                  <Trash2 size={20} /> Delete conversations
+                </li>
+              )}
               <li className="flex cursor-pointer items-center gap-2 rounded-md p-2.5 hover:bg-[#00FFA3] hover:text-black">
                 <User size={20} /> My account
               </li>
@@ -95,7 +103,7 @@ export const Layout = ({children}: PropsWithChildren) => {
   return (
     <div className="flex h-screen">
       <Sidebar />
-      <main className={cn("flex-1 overflow-auto p-6 text-[15px]", exoTwo.className)}>
+      <main className={cn("flex-1 overflow-hidden p-6 text-[15px]", exoTwo.className)}>
         {children}
       </main>
     </div>

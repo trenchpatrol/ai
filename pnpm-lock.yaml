@@ -28,6 +28,7 @@ specifiers:
   postcss: ^8
   prettier: ^3.5.1
   prettier-plugin-tailwindcss: ^0.6.11
+  radash: ^12.1.0
   react: ^18.0.0
   react-dom: ^18.0.0
   tailwind-merge: ^3.0.1
@@ -54,6 +55,7 @@ dependencies:
   lucide-react: 0.475.0_react@18.3.1
   next: 14.2.24_nnrd3gsncyragczmpvfhocinkq
   next-usequerystate: 1.20.0_next@14.2.24
+  radash: 12.1.0
   react: 18.3.1
   react-dom: 18.3.1_react@18.3.1
   tailwind-merge: 3.0.1
@@ -5303,6 +5305,11 @@ packages:
 
   /quick-format-unescaped/4.0.4:
     resolution: {integrity: sha512-tYC1Q1hgyRuHgloV/YXs2w15unPVh8qfu/qCTfhTYamaw7fyhumKa2yGpdSo87vY32rIclj+4fWYQXUMs9EHvg==}
+    dev: false
+
+  /radash/12.1.0:
+    resolution: {integrity: sha512-b0Zcf09AhqKS83btmUeYBS8tFK7XL2e3RvLmZcm0sTdF1/UUlHSsjXdCcWNxe7yfmAlPve5ym0DmKGtTzP6kVQ==}
+    engines: {node: '>=14.18.0'}
     dev: false
 
   /radix3/1.1.2:

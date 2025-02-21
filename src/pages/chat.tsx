@@ -61,7 +61,7 @@ const Chat = () => {
             </div>
           </div>
         ) : (
-          <div className="relative w-full">
+          <div className="relative h-full w-full">
             {type === "current-chat" ? (
               <div className="absolute left-1/2 top-1/2 -z-[1] -translate-x-1/2 -translate-y-1/2 transform">
                 <div className="h-80 w-64 overflow-hidden">
@@ -69,11 +69,15 @@ const Chat = () => {
                 </div>
               </div>
             ) : (
-              <div className="fixed left-[30%] top-[35%]">
-                <div className="fixed left-[48%]">
-                  <div className="h-16 w-96 overflow-hidden">
-                    <Image src="/img/logo-full.png" alt="logo-full" fill priority />
-                  </div>
+              <div className="flex h-full flex-col items-center justify-center space-y-5">
+                <div className="">
+                  <Image
+                    src="/img/logo-full.png"
+                    alt="logo-full"
+                    priority
+                    width={320}
+                    height={200}
+                  />
                 </div>
 
                 {!isAgentThinking && (

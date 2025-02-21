@@ -43,6 +43,6 @@ interface AnalyzeScore {
 }
 
 interface AntiRugAgentResponse {
-  checkCA: TokenInfo;
+  checkCa: TokenInfo;
   analyze: AnalyzeScore;
 }

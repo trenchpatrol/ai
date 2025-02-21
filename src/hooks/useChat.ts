@@ -1,9 +1,12 @@
 import {usePrivy} from "@privy-io/react-auth";
-import {useMutation, UseMutationResult, useQuery} from "@tanstack/react-query";
+import {
+  useMutation,
+  UseMutationResult,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import {useRouter} from "next/router";
 import axios from "axios";
-import {useSetAtom} from "jotai";
-import {chatAtom} from "~/state/chat";
 import {useQueryState} from "next-usequerystate";
 
 type SendChatResponse = {
@@ -18,6 +21,16 @@ type SendChatVariables = {
   userId: string;
   chatId?: string;
   userMessage: string;
+};
+
+type DeleteChatResponse = {
+  success: boolean;
+  message: string;
+  chatId: string;
+};
+
+type DeleteChatVariables = {
+  chatId: string;
 };
 
 export const useGetChatHistory = () => {
@@ -76,5 +89,34 @@ export const useSendChat = (): UseMutationResult<
 
   return useMutation<SendChatResponse, Error, Omit<SendChatVariables, "userId">>({
     mutationFn: (params) => sendChat({...params, userId: user?.id as string}),
+  });
+};
+
+const deleteChat = async ({
+  userId,
+  chatId,
+}: DeleteChatVariables & {userId: string}): Promise<DeleteChatResponse> => {
+  const response = await axios.delete(
+    `/api/delete-chat?userId=${userId}&chatId=${chatId}`,
+  );
+  return response.data;
+};
+
+export const useDeleteChat = (): UseMutationResult<
+  DeleteChatResponse,
+  Error,
+  DeleteChatVariables
+> => {
+  const {user} = usePrivy();
+  const queryClient = useQueryClient();
+  const router = useRouter();
+
+  return useMutation<DeleteChatResponse, Error, DeleteChatVariables>({
+    mutationFn: (params) => deleteChat({...params, userId: user?.id as string}),
+    onSuccess: () => {
+      queryClient.invalidateQueries({queryKey: ["get-chats", user?.id]});
+
+      router.push("/chat");
+    },
   });
 };
