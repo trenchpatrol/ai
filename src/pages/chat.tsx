@@ -49,7 +49,29 @@ const Chat = () => {
         <title>TrenchPatrol - Agent Terminal</title>
         <meta
           name="description"
-          content="TrenchPatrol - Your AI Agent that can help you analyze coin in Solana trenches."
+          content="TrenchPatrol - The AI terminal scanner for your safety in the trenches."
+        />
+
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="Objective — Portfolio Template" />
+        <meta
+          property="og:description"
+          content="The AI terminal scanner for your safety in the trenches."
+        />
+        <meta
+          property="og:image"
+          content="https://framerusercontent.com/images/4RiHKvHgUnUBImYYvoGyrsbaY.png"
+        />
+
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Objective — Portfolio Template" />
+        <meta
+          name="twitter:description"
+          content="The AI terminal scanner for your safety in the trenches."
+        />
+        <meta
+          name="twitter:image"
+          content="https://framerusercontent.com/images/4RiHKvHgUnUBImYYvoGyrsbaY.png"
         />
       </Head>
       <div className="flex h-full w-full items-center justify-center">
