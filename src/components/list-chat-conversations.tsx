@@ -5,7 +5,6 @@ import {Avatar, AvatarFallback, AvatarImage} from "~/components/ui";
 import {cn} from "~/lib/utils";
 import {chatAtom, isAgentThinkingAtom, isAgentWritingResponseAtom} from "~/state/chat";
 import {Share2} from "lucide-react";
-
 import {useCallback} from "react";
 
 interface ButtonShareToXProps {
@@ -15,15 +14,17 @@ interface ButtonShareToXProps {
 }
 
 const ButtonShareToX: React.FC<ButtonShareToXProps> = ({
-  title = "Check out this cool web3 project \n",
+  title = "🚨 Trench Patrol Alert! 🚨 \nCaught this!\n\n",
   text,
 }) => {
   const handleShare = useCallback(() => {
-    // Construct the sharing URL with proper intent parameters
     const shareUrl = new URL("https://x.com/intent/tweet");
+    const footerText = `
+    \nStay safe in the trenches. \nCheck more at ➡ trenchpatrol.ai
+    `;
 
     // Add query parameters
-    if (text) shareUrl.searchParams.append("text", text);
+    if (text) shareUrl.searchParams.append("text", text + footerText);
     if (title) shareUrl.searchParams.append("title", title);
 
     // Open in a new tab/window
@@ -137,7 +138,7 @@ export const ListChatConversation: React.FC<{messages: Message[]}> = ({messages}
 
           {chat.role !== "user" ? (
             <div>
-              <div className="mt-1 flex w-4/5 flex-col space-y-2">
+              <div className="mt-1 flex w-11/12 flex-col space-y-2">
                 <span className="text-[14px] text-gray-400">TrenchPatrol Agent</span>
                 <div
                   className={cn(

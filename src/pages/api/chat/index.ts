@@ -163,12 +163,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             "topIndvPer",
             "topTenPer",
           ]),
-          analyze: sanitizeResults?.antirug.analyze,
+          analyze: {score: sanitizeResults?.antirug?.analyze?.score + "%"},
           trenchbot: sanitizeResults?.trenchbot,
           topTenHolders: getTopTenHolders(),
+          topTenHoldersPercentage: getTopTenHolders().reduce(
+            (sum, item) => sum + item.percentage,
+            0,
+          ),
         };
 
-        console.log(actualResults, "Results fetching");
+        console.log(actualResults, "Result from Agent");
 
         const analysisMessages = [
           ...messages,
