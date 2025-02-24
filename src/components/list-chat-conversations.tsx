@@ -23,11 +23,9 @@ const ButtonShareToX: React.FC<ButtonShareToXProps> = ({
     \nStay safe in the trenches. \nCheck more at ➡ trenchpatrol.ai
     `;
 
-    // Add query parameters
     if (text) shareUrl.searchParams.append("text", text + footerText);
     if (title) shareUrl.searchParams.append("title", title);
 
-    // Open in a new tab/window
     window.open(shareUrl.toString(), "_blank", "noopener,noreferrer");
   }, [title, text]);
 
@@ -38,7 +36,7 @@ const ButtonShareToX: React.FC<ButtonShareToXProps> = ({
       aria-label="Share to X"
       className="mt-2 flex items-center justify-center space-x-2 rounded-lg border border-white/20 bg-[#1c1c1c] p-2 transition-colors duration-200 hover:bg-[#2a2a2a]">
       <Share2 size={20} />
-      <p>Share to</p>
+      <p className="text-[15px] md:text-base">Share to</p>
       <div>
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -70,8 +68,6 @@ export const ListChatConversation: React.FC<{messages: Message[]}> = ({messages}
 
   useEffect(() => {
     if (messages) setChatsState(messages);
-
-    return () => setChatsState(null);
   }, [messages]);
 
   useEffect(() => {
@@ -103,7 +99,12 @@ export const ListChatConversation: React.FC<{messages: Message[]}> = ({messages}
   const formatMessageText = (text: string) => {
     return text.split("\n").map((line, i) => (
       <span key={i}>
-        {line}
+        <span
+          className={cn(
+            line.includes("pump") ? "fold:text-base text-[11px] md:text-[13px]" : "",
+          )}>
+          {line}
+        </span>
         {i < text.split("\n").length - 1 && <br />}
       </span>
     ));
@@ -119,7 +120,7 @@ export const ListChatConversation: React.FC<{messages: Message[]}> = ({messages}
           className={`mb-3 flex items-start gap-2 ${
             chat.role === "user" ? "flex-row-reverse" : "flex-row"
           }`}>
-          <div className="flex flex-col items-center">
+          <div className="fold:flex hidden flex-col items-center">
             <Avatar className="mt-1">
               {user && (
                 <AvatarImage
@@ -138,25 +139,32 @@ export const ListChatConversation: React.FC<{messages: Message[]}> = ({messages}
 
           {chat.role !== "user" ? (
             <div>
-              <div className="mt-1 flex w-11/12 flex-col space-y-2">
+              <div className="ipad:w-11/12 mt-1 flex w-full flex-col space-y-2">
                 <span className="text-[14px] text-gray-400">TrenchPatrol Agent</span>
                 <div
                   className={cn(
-                    "mt-1 max-w-[60%] whitespace-pre-wrap break-words rounded-lg p-3 text-base",
+                    "ipad:max-w-[60%] mt-1 max-w-full rounded-lg p-3",
                     "border border-white/20 bg-[#1c1c1c]",
                   )}>
-                  {formatMessageText(
-                    index === chats.length - 1 && isAgentWriting
-                      ? (lastMessage?.content.substring(0, typingProgress) as string)
-                      : chat.content,
-                  )}
+                  <p className="text-[15px] md:text-base">
+                    {formatMessageText(
+                      index === chats.length - 1 && isAgentWriting
+                        ? (lastMessage?.content.substring(0, typingProgress) as string)
+                        : chat.content,
+                    )}
+                  </p>
                 </div>
               </div>
               <ButtonShareToX text={chat.content} />
             </div>
           ) : (
-            <div className="max-w-[50%] rounded-lg bg-[#00FFA3] p-3 text-base text-black">
-              {formatMessageText(chat.content)}
+            <div className="ipad:max-w-[50%] max-w-4/5 flex-col space-y-2">
+              <span className="flex justify-end pr-1 text-[14px] text-gray-400">You</span>
+              <div className="rounded-lg bg-[#00FFA3] p-3">
+                <p className="text-[15px] text-black md:text-base">
+                  {formatMessageText(chat.content)}
+                </p>
+              </div>
             </div>
           )}
         </div>

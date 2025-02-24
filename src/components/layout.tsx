@@ -1,5 +1,14 @@
-import React, {PropsWithChildren} from "react";
-import {Trash2, User, LogOut, LayoutDashboard, LogIn, MessageCircle} from "lucide-react";
+import React, {PropsWithChildren, useState} from "react";
+import {
+  Trash2,
+  User,
+  LogOut,
+  LayoutDashboard,
+  LogIn,
+  MessageCircle,
+  Menu,
+  X,
+} from "lucide-react";
 import {Button} from "~/components/ui";
 import {usePrivy} from "@privy-io/react-auth";
 import {cn} from "~/lib/utils";
@@ -9,6 +18,7 @@ import {ChatHistory} from "./chat-history";
 import {chatAtom} from "~/state/chat";
 import {useSetAtom} from "jotai";
 import {useDeleteChat} from "~/hooks/useChat";
+import Link from "next/link";
 
 const Sidebar = () => {
   const {authenticated, logout, ready, login, user} = usePrivy();
@@ -36,7 +46,7 @@ const Sidebar = () => {
   return (
     <aside
       className={cn(
-        "flex h-screen w-[300px] flex-col border-r border-white/10 bg-[#1C1C1C] p-4 text-white",
+        "ipad-mini:w-[350px] flex h-screen w-full flex-col overflow-auto border-r border-white/10 bg-[#1C1C1C] p-4 text-white",
         exoTwo.className,
       )}>
       <Button
@@ -47,9 +57,11 @@ const Sidebar = () => {
 
       <nav className="flex-1">
         <ul className="space-y-2">
-          <li className="flex cursor-pointer items-center gap-2 rounded-md px-2.5 pb-2 pt-2.5 hover:bg-[#00FFA3] hover:text-black">
-            <LayoutDashboard size={20} /> Home
-          </li>
+          <Link href="https://trenchpatrol.ai" target="_blank">
+            <li className="flex cursor-pointer items-center gap-2 rounded-md px-2.5 pb-2 pt-2.5 hover:bg-[#00FFA3] hover:text-black">
+              <LayoutDashboard size={20} /> Home
+            </li>
+          </Link>
           {authenticated && (
             <li className="p-2.5">
               <div className="flex items-center space-x-2">
@@ -100,10 +112,34 @@ const Sidebar = () => {
 };
 
 export const Layout = ({children}: PropsWithChildren) => {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen((prev) => !prev);
+  };
+
   return (
-    <div className="flex h-screen">
-      <Sidebar />
-      <main className={cn("flex-1 overflow-hidden p-6 text-[15px]", exoTwo.className)}>
+    <div className="relative flex h-screen">
+      <div className="laptop-sm:block nesthub:hidden hidden">
+        <Sidebar />
+      </div>
+
+      <button
+        onClick={toggleSidebar}
+        className={cn(
+          isSidebarOpen ? "right-5" : "left-5",
+          "nesthub:block laptop-sm:hidden absolute top-4 z-50 rounded-md bg-[#00FFA3] p-2 text-black hover:bg-white",
+        )}>
+        {isSidebarOpen ? <X size={24} /> : <Menu size={24} />}
+      </button>
+
+      {isSidebarOpen && (
+        <div className="nesthub:block laptop-sm:hidden fixed z-40 h-full w-4/5">
+          <Sidebar />
+        </div>
+      )}
+
+      <main className={cn("flex-1 overflow-hidden p-1", exoTwo.className)}>
         {children}
       </main>
     </div>

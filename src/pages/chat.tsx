@@ -97,13 +97,13 @@ const Chat = () => {
                     src="/img/logo-full.png"
                     alt="logo-full"
                     priority
-                    width={320}
-                    height={200}
+                    width={290}
+                    height={150}
                   />
                 </div>
 
                 {!isAgentThinking && (
-                  <div className="mt-16 w-full max-w-full">
+                  <div className="nesthub:block mt-16 hidden w-full max-w-full">
                     <div className="flex w-full flex-col items-center justify-center gap-4 px-12 py-10 md:flex-row">
                       <FeatureSection
                         icon={<MessageSquare className="text-white" />}
@@ -142,8 +142,10 @@ const Chat = () => {
         )}
       </div>
 
-      <div className="fixed bottom-5 left-[58%] flex w-full -translate-x-1/2 items-center justify-center">
-        <ChatBox />
+      <div className="flex items-center justify-center">
+        <div className="absolute bottom-5 w-full max-w-3xl px-4">
+          <ChatBox />
+        </div>
       </div>
     </Layout>
   );
