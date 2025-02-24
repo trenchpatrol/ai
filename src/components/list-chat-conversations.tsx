@@ -20,7 +20,7 @@ const ButtonShareToX: React.FC<ButtonShareToXProps> = ({
   const handleShare = useCallback(() => {
     const shareUrl = new URL("https://x.com/intent/tweet");
     const footerText = `
-    \nStay safe in the trenches. \nCheck more at ➡ trenchpatrol.ai
+    \nStay safe in the trenches. \nCheck more at ➡ chat.trenchpatrol.ai
     `;
 
     if (text) shareUrl.searchParams.append("text", text + footerText);

@@ -64,7 +64,7 @@ const Chat = () => {
         />
 
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Objective — Portfolio Template" />
+        <meta name="twitter:title" content="TrenchPatrol - Agent Terminal" />
         <meta
           name="twitter:description"
           content="The AI terminal scanner for your safety in the trenches."
