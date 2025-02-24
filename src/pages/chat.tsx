@@ -53,7 +53,7 @@ const Chat = () => {
         />
 
         <meta property="og:type" content="website" />
-        <meta property="og:title" content="Objective — Portfolio Template" />
+        <meta property="og:title" content="TrenchPatrol - Agent Terminal" />
         <meta
           property="og:description"
           content="The AI terminal scanner for your safety in the trenches."
