@@ -29,15 +29,15 @@ export default async function handler(
       {headers},
     );
 
-    const responseAnalyzeTokenInfo = await axios.post<AnalyzeScore>(
-      API_URL + "/check-ca-v2",
-      {ca: address},
-      {headers},
-    );
+    // const responseAnalyzeTokenInfo = await axios.post<AnalyzeScore>(
+    //   API_URL + "/check-ca-v2",
+    //   {ca: address},
+    //   {headers},
+    // );
 
     const returnResponse = {
       ...responseCheckTokenInfo.data,
-      analyze: {...responseAnalyzeTokenInfo.data},
+      // analyze: {...responseAnalyzeTokenInfo.data},
     };
 
     return res.status(200).json(transformToCamelCase(returnResponse));

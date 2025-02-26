@@ -113,7 +113,7 @@ export const ListChatConversation: React.FC<{messages: Message[]}> = ({messages}
   return (
     <div
       ref={scrollRef}
-      className="z-[2] h-screen max-w-full overflow-y-auto px-4 pb-2 pt-20 laptop-sm:pt-7">
+      className="z-[2] h-screen max-w-full overflow-y-auto px-4 pb-20 pt-20 laptop-sm:pt-7">
       {chats?.map((chat, index) => (
         <div
           key={index}

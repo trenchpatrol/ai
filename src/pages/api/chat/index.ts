@@ -163,12 +163,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             "topIndvPer",
             "topTenPer",
           ]),
-          isCanAnalyze: true,
-          analyze: {score: sanitizeResults?.antirug?.analyze?.score + "%"},
+          isCanAnalyze: !sanitizeResults.antirug.checkCa.ca.includes(
+            process.env.ADDRESS_BLACKLIST!,
+          ),
+          // analyze: {score: sanitizeResults?.antirug?.analyze?.score + "%"},
           trenchbot: sanitizeResults?.trenchbot,
           topTenHolders: getTopTenHolders(),
-          topTenHoldersPercentage: getTopTenHolders().reduce(
-            (sum, item) => sum + item.percentage,
+          topTenHoldersPercentage: getTopTenHolders()?.reduce(
+            (sum, item) => sum + item?.percentage,
             0,
           ),
         };
