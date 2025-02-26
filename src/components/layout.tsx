@@ -20,6 +20,7 @@ import {chatAtom} from "~/state/chat";
 import {useSetAtom} from "jotai";
 import {useDeleteChat} from "~/hooks/useChat";
 import Link from "next/link";
+import Image from "next/image";
 
 const Sidebar = () => {
   const {authenticated, logout, ready, login, user} = usePrivy();
@@ -120,7 +121,7 @@ export const Layout = ({children}: PropsWithChildren) => {
   };
 
   return (
-    <div className="relative flex h-screen w-full">
+    <div className={cn("relative flex h-screen w-full", exoTwo.className)}>
       <div className="hidden nesthub:hidden laptop-sm:block">
         <Sidebar />
       </div>
@@ -135,6 +136,15 @@ export const Layout = ({children}: PropsWithChildren) => {
               "top-4 rounded-md bg-[#00FFA3] p-2 text-black hover:bg-white",
             )}>
             {isSidebarOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+
+          <button
+            disabled
+            aria-label="Button get full access"
+            type="button"
+            className="flex items-center justify-center space-x-2 rounded-md bg-[#272727] p-2 px-4">
+            <Image src="/img/logo.png" width={20} height={20} alt="logo" />
+            <p className="text-sm text-white">Get Full Access</p>
           </button>
 
           <button type="button">

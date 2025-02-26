@@ -103,7 +103,7 @@ const Chat = () => {
                 </div>
 
                 {!isAgentThinking && (
-                  <div className="nesthub:block mt-16 hidden w-full max-w-full">
+                  <div className="mt-16 hidden w-full max-w-full nesthub:block">
                     <div className="flex w-full flex-col items-center justify-center gap-4 px-12 py-10 md:flex-row">
                       <FeatureSection
                         icon={<MessageSquare className="text-white" />}
@@ -136,6 +136,17 @@ const Chat = () => {
                 )}
               </div>
             )}
+
+            <div className="hidden items-center justify-center laptop-sm:flex">
+              <button
+                disabled
+                aria-label="Button get full access"
+                type="button"
+                className="absolute top-5 flex items-center justify-center space-x-2 rounded-md bg-[#272727] p-2 px-4">
+                <Image src="/img/logo.png" width={20} height={20} alt="logo" />
+                <p className="text-white">Get Full Access</p>
+              </button>
+            </div>
 
             <ListChatConversation messages={data?.messages as Message[]} />
           </div>
