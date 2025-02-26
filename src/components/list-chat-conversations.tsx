@@ -101,7 +101,7 @@ export const ListChatConversation: React.FC<{messages: Message[]}> = ({messages}
       <span key={i}>
         <span
           className={cn(
-            line.includes("pump") ? "fold:text-base text-[11px] md:text-[13px]" : "",
+            line.includes("pump") ? "text-[11px] md:text-[13px] fold:text-base" : "",
           )}>
           {line}
         </span>
@@ -113,14 +113,14 @@ export const ListChatConversation: React.FC<{messages: Message[]}> = ({messages}
   return (
     <div
       ref={scrollRef}
-      className="z-[2] h-screen max-w-full overflow-y-auto px-4 pb-24 pt-7">
+      className="z-[2] h-screen max-w-full overflow-y-auto px-4 pb-2 pt-20 laptop-sm:pt-7">
       {chats?.map((chat, index) => (
         <div
           key={index}
           className={`mb-3 flex items-start gap-2 ${
             chat.role === "user" ? "flex-row-reverse" : "flex-row"
           }`}>
-          <div className="fold:flex hidden flex-col items-center">
+          <div className="hidden flex-col items-center fold:flex">
             <Avatar className="mt-1">
               {user && (
                 <AvatarImage
@@ -139,11 +139,11 @@ export const ListChatConversation: React.FC<{messages: Message[]}> = ({messages}
 
           {chat.role !== "user" ? (
             <div>
-              <div className="ipad:w-11/12 mt-1 flex w-full flex-col space-y-2">
+              <div className="mt-1 flex w-full flex-col space-y-2 ipad:w-11/12">
                 <span className="text-[14px] text-gray-400">TrenchPatrol Agent</span>
                 <div
                   className={cn(
-                    "ipad:max-w-[60%] mt-1 max-w-full rounded-lg p-3",
+                    "mt-1 max-w-full rounded-lg p-3 ipad:max-w-[60%]",
                     "border border-white/20 bg-[#1c1c1c]",
                   )}>
                   <p className="text-[15px] md:text-base">
@@ -158,7 +158,7 @@ export const ListChatConversation: React.FC<{messages: Message[]}> = ({messages}
               <ButtonShareToX text={chat.content} />
             </div>
           ) : (
-            <div className="ipad:max-w-[50%] max-w-4/5 flex-col space-y-2">
+            <div className="max-w-4/5 flex-col space-y-1.5 ipad:max-w-[50%]">
               <span className="flex justify-end pr-1 text-[14px] text-gray-400">You</span>
               <div className="rounded-lg bg-[#00FFA3] p-3">
                 <p className="text-[15px] text-black md:text-base">

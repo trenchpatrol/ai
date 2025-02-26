@@ -163,6 +163,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             "topIndvPer",
             "topTenPer",
           ]),
+          isCanAnalyze: true,
           analyze: {score: sanitizeResults?.antirug?.analyze?.score + "%"},
           trenchbot: sanitizeResults?.trenchbot,
           topTenHolders: getTopTenHolders(),

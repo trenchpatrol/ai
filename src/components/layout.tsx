@@ -8,6 +8,7 @@ import {
   MessageCircle,
   Menu,
   X,
+  Edit,
 } from "lucide-react";
 import {Button} from "~/components/ui";
 import {usePrivy} from "@privy-io/react-auth";
@@ -46,7 +47,7 @@ const Sidebar = () => {
   return (
     <aside
       className={cn(
-        "ipad-mini:w-[350px] flex h-screen w-full flex-col overflow-auto border-r border-white/10 bg-[#1C1C1C] p-4 text-white",
+        "flex h-screen w-full flex-col overflow-auto border-r border-white/10 bg-[#1C1C1C] p-4 text-white ipad-mini:w-[350px]",
         exoTwo.className,
       )}>
       <Button
@@ -119,22 +120,31 @@ export const Layout = ({children}: PropsWithChildren) => {
   };
 
   return (
-    <div className="relative flex h-screen">
-      <div className="laptop-sm:block nesthub:hidden hidden">
+    <div className="relative flex h-screen w-full">
+      <div className="hidden nesthub:hidden laptop-sm:block">
         <Sidebar />
       </div>
 
-      <button
-        onClick={toggleSidebar}
-        className={cn(
-          isSidebarOpen ? "right-5" : "left-5",
-          "nesthub:block laptop-sm:hidden absolute top-4 z-50 rounded-md bg-[#00FFA3] p-2 text-black hover:bg-white",
-        )}>
-        {isSidebarOpen ? <X size={24} /> : <Menu size={24} />}
-      </button>
+      <div className="fixed z-50 h-[68px] w-full max-w-full bg-[#191919] px-5 py-3 nesthub:block laptop-sm:hidden">
+        <div className="flex justify-between">
+          <button
+            type="button"
+            onClick={toggleSidebar}
+            className={cn(
+              isSidebarOpen ? "right-5" : "left-5",
+              "top-4 rounded-md bg-[#00FFA3] p-2 text-black hover:bg-white",
+            )}>
+            {isSidebarOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+
+          <button type="button">
+            <Edit size={25} />
+          </button>
+        </div>
+      </div>
 
       {isSidebarOpen && (
-        <div className="nesthub:block laptop-sm:hidden fixed z-40 h-full w-4/5">
+        <div className="fixed z-40 h-full w-4/5 nesthub:block laptop-sm:hidden">
           <Sidebar />
         </div>
       )}
