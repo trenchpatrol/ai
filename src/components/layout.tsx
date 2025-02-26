@@ -115,9 +115,19 @@ const Sidebar = () => {
 
 export const Layout = ({children}: PropsWithChildren) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const {authenticated, login} = usePrivy();
+  const {replace, query} = useRouter();
 
   const toggleSidebar = () => {
     setIsSidebarOpen((prev) => !prev);
+  };
+
+  const onNavigateToNewChat = () => {
+    if (authenticated) {
+      return replace(`/chat?id=${self.crypto.randomUUID()}&type=new-chat`);
+    }
+
+    return login();
   };
 
   return (
@@ -147,7 +157,7 @@ export const Layout = ({children}: PropsWithChildren) => {
             <p className="text-sm text-white">Get Full Access</p>
           </button>
 
-          <button type="button">
+          <button type="button" onClick={onNavigateToNewChat}>
             <Edit size={25} />
           </button>
         </div>
